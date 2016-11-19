@@ -125,14 +125,16 @@ function GetCurrentExamGrade()
 
 function GetCurrentExamPointsGoal()
 {
-	var Goal = GlobalLevels[CurrentExamOrdinal].Points[4];
+	return GlobalLevels[CurrentExamOrdinal].Points[4];
+	// The following code returns the next goal value depending on the current grade.
+	/*var Goal = GlobalLevels[CurrentExamOrdinal].Points[4];
 	for (var i = 0; i < 5; i++) {
 		if (ExamPoints < GlobalLevels[CurrentExamOrdinal].Points[i]) {
 			Goal = GlobalLevels[CurrentExamOrdinal].Points[i];
 			break;
 		}
 	}
-	return Goal;
+	return Goal;*/
 }
 
 //=====================================================================
