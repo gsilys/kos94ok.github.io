@@ -1,0 +1,11 @@
+#ExamPointsLabel, #ExamPointsSeparator
+{
+	float: left;
+}
+
+#ExamPointsCurrent, #ExamPointsMax
+{
+	width: 35px;
+	float: left;
+	text-align: center;
+}

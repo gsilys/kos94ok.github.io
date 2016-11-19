@@ -1,15 +1,24 @@
+<!DOCTYPE HTML>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<script src="core.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body onload="Initialization()">
 		<div id="Exam">
-			<div id="ExamName">Unnamed exam</div>
-			<div id="ExamNumber">#1</div>
+			<span id="ExamName">Unnamed exam</span>
+			<span id="ExamNumber">???</span>
 			<div id="ExamPoints">
+				<span id="ExamPointsLabel">Points:</span>
 				<span id="ExamPointsCurrent">???</span>
 				<span id="ExamPointsSeparator">/</span>
 				<span id="ExamPointsMax">???</span>
+				<br/>
+			</div>
+			<div id="ExamGrade">
+				<span id="ExamGradeLabel">Grade:</span>
+				<span id="ExamGradeValue">?</span>
 			</div>
 			<button onclick="WorkHard_OnClick()">Work Hard</button>
 			<button onclick="EndExam_OnClick()">Finish Exam</button>
