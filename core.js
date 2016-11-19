@@ -42,17 +42,15 @@ var LastExamPassed = true;
 //=====================================================================
 function Initialization()
 {
-	// Hide home area
-	document.getElementById("Home").style.display = "none";
-	document.getElementById("HomeGameOver").style.display = "none";
 	// Generate some temporary levels
 	for (var i = 2; i < 50; i++)
 	{
-		GlobalLevels.push(new Level("Temporary Exam", i, i, "Linear"));
+		GlobalLevels.push(new Level("Temporary Exam", i * 4, i, "Linear"));
 	}
-	// Update the UI initially
-	UpdateExamPoints();
-	UpdateExamOrdinal();
+	// Start exam timer
+	Exam_Timer();
+	// Show exam UI
+	ShowExam();
 }
 
 //=====================================================================
@@ -62,16 +60,13 @@ function WorkHard_OnClick()
 {
 	if (ExamPoints < GlobalLevels[CurrentExamOrdinal].Points[4])
 	{
-		ExamPoints += 1;
+		document.getElementById("ExamWorkHard").disabled = true;
+		WorkHard_Timer();
 	}
-	UpdateExamPoints();
 }
 
 function EndExam_OnClick()
 {
-	// Display home
-	document.getElementById("Exam").style.display = "none";
-	document.getElementById("Home").style.display = "block";
 	// Update the stats
 	var Grade = GetCurrentExamGrade();
 	if (Grade == 0) {
@@ -83,28 +78,21 @@ function EndExam_OnClick()
 		TotalExamsPassed += 1;
 	}
 	CurrencyUnits += Grade;
-	// Game over condition
-	if (TotalExamsFailed == 3)
-	{
-		document.getElementById("HomeContinue").style.display = "none";
-		document.getElementById("HomeGameOver").style.display = "block";
-	}
-	// Update the UI
-	UpdateHome();
+
+	window.clearInterval(ExamTimerId);
+	ShowHome();
 }
 
 function NextExam_OnClick()
 {
-	document.getElementById("Home").style.display = "none";
-	document.getElementById("Exam").style.display = "block";
 	if (CurrentExamOrdinal < GlobalLevels.length - 1)
 	{
+		Exam_Timer();
 		ExamPoints = 0;
 		if (LastExamPassed == true) {
 			CurrentExamOrdinal += 1;
 		}
-		UpdateExamPoints();
-		UpdateExamOrdinal();
+		ShowExam();
 	}
 }
 
@@ -135,6 +123,92 @@ function GetCurrentExamPointsGoal()
 		}
 	}
 	return Goal;*/
+}
+
+function ShowHome()
+{
+	// Display home
+	document.getElementById("Exam").style.display = "none";
+	document.getElementById("Home").style.display = "block";
+	document.getElementById("HomeGameOver").style.display = "none";
+	// Game over condition
+	if (TotalExamsFailed == 3)
+	{
+		document.getElementById("HomeContinue").style.display = "none";
+		document.getElementById("HomeGameOver").style.display = "block";
+	}
+	// Update the UI
+	UpdateHome();
+}
+
+function ShowExam()
+{
+	document.getElementById("Home").style.display = "none";
+	document.getElementById("Exam").style.display = "block";
+	UpdateExamPoints();
+	UpdateExamOrdinal();
+}
+
+function WorkHard_Timer()
+{
+	var TimerId = window.setInterval(WorkHard_OnProgressUpdate, 20);
+
+	function WorkHard_OnProgressUpdate()
+	{
+		var Progress = document.getElementById("ExamWorkProgress");
+		if (Progress.value == Progress.max)
+		{
+			Progress.value = 0;
+		}
+		else
+		{
+			Progress.value += 1;
+			if (Progress.value == Progress.max)
+			{
+				window.clearInterval(TimerId);
+				document.getElementById("ExamWorkHard").disabled = false;
+				// Add the stuff
+				ExamPoints += 1;
+				UpdateExamPoints();
+			}
+		}
+	}
+}
+
+var ExamTimerId;
+function Exam_Timer()
+{
+	ExamTimerId = window.setInterval(Exam_OnTimerUpdate, 1000);
+	var TimerData = 61;
+	Exam_OnTimerUpdate();
+
+	function Exam_OnTimerUpdate()
+	{
+		TimerData -= 1;
+		// Get label
+		var Label = document.getElementById("ExamTimeProgress");
+		// Calculate values
+		var Minutes = Math.floor(TimerData / 60);
+		var Seconds = TimerData - Minutes * 60;
+		// Display values
+		var LabelText = "";
+		if (Minutes < 10)
+		{
+			LabelText += "0";
+		}
+		LabelText += Minutes + ":";
+		if (Seconds < 10)
+		{
+			LabelText += "0";
+		}
+		LabelText += Seconds;
+		Label.innerHTML = LabelText;
+
+		if (TimerData == -1)
+		{
+			EndExam_OnClick();
+		}
+	}
 }
 
 //=====================================================================
