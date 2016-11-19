@@ -34,6 +34,8 @@ var TotalExamsPassed = 0;
 var TotalExamsFailed = 0;
 var GlobalLevels = [];
 var ExamPoints = 0;
+var CurrencyUnits = 0;
+var LastExamPassed = true;
 
 //=====================================================================
 // Initialization
@@ -42,6 +44,7 @@ function Initialization()
 {
 	// Hide home area
 	document.getElementById("Home").style.display = "none";
+	document.getElementById("HomeGameOver").style.display = "none";
 	// Generate some temporary levels
 	for (var i = 2; i < 50; i++)
 	{
@@ -72,10 +75,19 @@ function EndExam_OnClick()
 	// Update the stats
 	var Grade = GetCurrentExamGrade();
 	if (Grade == 0) {
+		LastExamPassed = false;
 		TotalExamsFailed += 1;
 	}
 	else {
+		LastExamPassed = true;
 		TotalExamsPassed += 1;
+	}
+	CurrencyUnits += Grade;
+	// Game over condition
+	if (TotalExamsFailed == 3)
+	{
+		document.getElementById("HomeContinue").style.display = "none";
+		document.getElementById("HomeGameOver").style.display = "block";
 	}
 	// Update the UI
 	UpdateHome();
@@ -88,8 +100,9 @@ function NextExam_OnClick()
 	if (CurrentExamOrdinal < GlobalLevels.length - 1)
 	{
 		ExamPoints = 0;
-		TotalExamsPassed += 1;
-		CurrentExamOrdinal += 1;
+		if (LastExamPassed == true) {
+			CurrentExamOrdinal += 1;
+		}
 		UpdateExamPoints();
 		UpdateExamOrdinal();
 	}
@@ -155,9 +168,13 @@ function UpdateExamOrdinal()
 function UpdateHome()
 {
 	var Grade = GetCurrentExamGrade();
+	// Determine the outcome message
 	var ExamStatus;
-	if (Grade == 0) {
-		ExamStatus = "You have failed the exam!";
-	}
+	if (Grade == 0) { ExamStatus = "You have failed the exam!"; }
+	else { ExamStatus = "Congratulations! You have passed the exam with grade " + Grade; }
+	// Update elements
 	document.getElementById("HomeExamStatus").innerHTML = ExamStatus;
+	document.getElementById("HomeCurrencyUnits").innerHTML = "- Your (up)grade money: " + CurrencyUnits;
+	document.getElementById("HomeExamsPassed").innerHTML = "- Exams passed: " + TotalExamsPassed;
+	document.getElementById("HomeExamsFailed").innerHTML = "- Exams failed: " + TotalExamsFailed + " / 3";
 }
