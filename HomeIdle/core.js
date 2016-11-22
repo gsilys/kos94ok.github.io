@@ -47,8 +47,6 @@ function Initialization()
 	{
 		GlobalLevels.push(new Level("Temporary Exam", i * 4, i, "Linear"));
 	}
-	// Start exam timer
-	Exam_Timer();
 	// Show exam UI
 	ShowExam();
 }
@@ -171,42 +169,6 @@ function WorkHard_Timer()
 				ExamPoints += 1;
 				UpdateExamPoints();
 			}
-		}
-	}
-}
-
-var ExamTimerId;
-function Exam_Timer()
-{
-	ExamTimerId = window.setInterval(Exam_OnTimerUpdate, 1000);
-	var TimerData = 61;
-	Exam_OnTimerUpdate();
-
-	function Exam_OnTimerUpdate()
-	{
-		TimerData -= 1;
-		// Get label
-		var Label = document.getElementById("ExamTimeProgress");
-		// Calculate values
-		var Minutes = Math.floor(TimerData / 60);
-		var Seconds = TimerData - Minutes * 60;
-		// Display values
-		var LabelText = "";
-		if (Minutes < 10)
-		{
-			LabelText += "0";
-		}
-		LabelText += Minutes + ":";
-		if (Seconds < 10)
-		{
-			LabelText += "0";
-		}
-		LabelText += Seconds;
-		Label.innerHTML = LabelText;
-
-		if (TimerData == -1)
-		{
-			EndExam_OnClick();
 		}
 	}
 }
