@@ -26,6 +26,64 @@ class Level
 	}
 }
 
+class Upgrade
+{
+	// Create new upgrade
+	constructor(Id, Name, Cost, ParentId)
+	{
+		this.Id = Id;
+		this.Name = Name;
+		this.Cost = Cost;
+		this.ParentId = ParentId;
+		this.Purchased = false;
+	}
+	// [Internal use]
+	// Get index of an upgrade in the array
+	static GetIndexOf(Id)
+	{
+		for (var i = 0; i < GlobalUpgrades.length; i++)
+		{
+			if (GlobalUpgrades[i].Id == Id)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+	// Is the upgrade visible on the list (i.e. can be purchased)
+	static IsVisible(Id)
+	{
+		var Index = Upgrade.GetIndexOf(Id);
+		// No upgrade found or already purchased - hide
+		if (Index == -1 || GlobalUpgrades[Index].Purchased == true)
+			return false;
+		// No parent (and not purchased yet) - show
+		if (GlobalUpgrades[Index].ParentId == null)
+			return true;
+		// Else look for parent
+		for (var i = 0; i < GlobalUpgrades.length; i++)
+		{
+			if (GlobalUpgrades[i].Id == GlobalUpgrades[Index].ParentId)
+			{
+				if (Upgrade.IsPurchased(GlobalUpgrades[i].Id) == true) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	static IsPurchased(Id)
+	{
+		var Index = Upgrade.GetIndexOf(Id);
+		if (Index == -1)
+			return false;
+		return GlobalUpgrades[Index].Purchased;
+	}
+}
+
 //=====================================================================
 // Global scope variables
 //=====================================================================
@@ -33,6 +91,7 @@ var CurrentExamOrdinal = 0;
 var TotalExamsPassed = 0;
 var TotalExamsFailed = 0;
 var GlobalLevels = [];
+var GlobalUpgrades = [];
 var ExamPoints = 0;
 var CurrencyUnits = 0;
 var LastExamPassed = true;
@@ -47,6 +106,12 @@ function Initialization()
 	{
 		GlobalLevels.push(new Level("Temporary Exam", i * 4, i, "Linear"));
 	}
+	// Push upgrades
+	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", 1, null));
+	GlobalUpgrades.push(new Upgrade("click02", "Determination, Level 2", 2, "click01"));
+	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", 5, "click02"));
+	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", 8, "click03"));
+	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", 15, "click04"));
 	// Start exam timer
 	Exam_Timer();
 	// Show exam UI
@@ -93,6 +158,19 @@ function NextExam_OnClick()
 			CurrentExamOrdinal += 1;
 		}
 		ShowExam();
+	}
+}
+
+function BuyUpgrade_OnClick(ButtonId)
+{
+	var UpgradeId = ButtonId.substring(7);
+	var Index = Upgrade.GetIndexOf(UpgradeId);
+	var Cost = GlobalUpgrades[Index].Cost;
+	if (CurrencyUnits >= Cost)
+	{
+		CurrencyUnits -= Cost;
+		GlobalUpgrades[Index].Purchased = true;
+		UpdateHome();
 	}
 }
 
@@ -253,4 +331,29 @@ function UpdateHome()
 	document.getElementById("HomeCurrencyUnits").innerHTML = "- Your (up)grade money: " + CurrencyUnits;
 	document.getElementById("HomeExamsPassed").innerHTML = "- Exams passed: " + TotalExamsPassed;
 	document.getElementById("HomeExamsFailed").innerHTML = "- Exams failed: " + TotalExamsFailed + " / 3";
+	// Update upgrade list
+	UpdateUpgradeList();
+}
+
+function UpdateUpgradeList()
+{
+	var Div = "";
+	document.getElementById("HomeUpgrades").innerHTML = "";
+	for (var i = 0; i < GlobalUpgrades.length; i++)
+	{
+		if (Upgrade.IsVisible(GlobalUpgrades[i].Id))
+		{
+			// Div tag
+			Div = "<div id=\"Upg_" + GlobalUpgrades[i].Id + "\" class=\"HomeUpgradesFloater\">";
+			// Upgrade name
+			Div += "<div><div>" + GlobalUpgrades[i].Name + "</div>";
+			// Upgrade cost
+			Div += "<div>Cost: " + GlobalUpgrades[i].Cost + "</div></div>";
+			// Button
+			Div += "<button id=\"UpgBtn_" + GlobalUpgrades[i].Id + "\" class=\"HomeUpgradesButton\" onclick=\"BuyUpgrade_OnClick(this.id)\">Buy</button>";
+			// Div closing tag
+			Div += "</div>"
+			document.getElementById("HomeUpgrades").innerHTML += Div;
+		}
+	}
 }
