@@ -29,10 +29,11 @@ class Level
 class Upgrade
 {
 	// Create new upgrade
-	constructor(Id, Name, Cost, ParentId)
+	constructor(Id, Name, Description, Cost, ParentId)
 	{
 		this.Id = Id;
 		this.Name = Name;
+		this.Description = Description;
 		this.Cost = Cost;
 		this.ParentId = ParentId;
 		this.Purchased = false;
@@ -107,11 +108,11 @@ function Initialization()
 		GlobalLevels.push(new Level("Temporary Exam", i * 4, i, "Linear"));
 	}
 	// Push upgrades
-	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", 1, null));
-	GlobalUpgrades.push(new Upgrade("click02", "Determination, Level 2", 2, "click01"));
-	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", 5, "click02"));
-	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", 8, "click03"));
-	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", 15, "click04"));
+	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", "Your work now gives you 1 extra point.", 1, null));
+	GlobalUpgrades.push(new Upgrade("click02", "Determination, Level 2", "Your work now gives you 1 extra point.", 2, "click01"));
+	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", "Your work now gives you 1 extra point.", 5, "click02"));
+	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", "Your work now gives you 1 extra point.", 8, "click03"));
+	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", "Your work now gives you double points.", 15, "click04"));
 	// Start exam timer
 	Exam_Timer();
 	// Show exam UI
@@ -248,8 +249,18 @@ function WorkHard_Timer()
 			{
 				window.clearInterval(TimerId);
 				document.getElementById("ExamWorkHard").disabled = false;
-				// Add the stuff
-				ExamPoints += 1;
+				// Add the points
+				var PointsToAdd = 1;
+				if (Upgrade.IsPurchased("click01")) { PointsToAdd = 2; } 
+				if (Upgrade.IsPurchased("click02")) { PointsToAdd = 3; } 
+				if (Upgrade.IsPurchased("click03")) { PointsToAdd = 4; } 
+				if (Upgrade.IsPurchased("click04")) { PointsToAdd = 5; } 
+				if (Upgrade.IsPurchased("click05")) { PointsToAdd = 10; } 
+
+				ExamPoints += PointsToAdd;
+				// Update points
+				var Goal = GetCurrentExamPointsGoal();
+				if (ExamPoints > Goal) { ExamPoints = Goal; }
 				UpdateExamPoints();
 			}
 		}
@@ -351,7 +362,9 @@ function UpdateUpgradeList()
 			// Upgrade name
 			Div += "<div><div>" + GlobalUpgrades[i].Name + "</div>";
 			// Upgrade cost
-			Div += "<div>Cost: " + GlobalUpgrades[i].Cost + "</div></div>";
+			Div += "<div>Cost: " + GlobalUpgrades[i].Cost + "</div>";
+			// Upgrade description
+			Div += "<div class=\"HomeUpgradesText\">" + GlobalUpgrades[i].Description + "</div></div>";
 			// Button
 			Div += "<button id=\"UpgBtn_" + GlobalUpgrades[i].Id + "\" class=\"HomeUpgradesButton\" onclick=\"BuyUpgrade_OnClick(this.id)\">Buy</button>";
 			// Div closing tag
