@@ -230,18 +230,21 @@ function ShowExam()
 function WorkHard_Timer()
 {
 	var TimerId = window.setInterval(WorkHard_OnProgressUpdate, 20);
+	var Timestamp = new Date();
 
 	function WorkHard_OnProgressUpdate()
 	{
 		var Progress = document.getElementById("ExamWorkProgress");
-		if (Progress.value == Progress.max)
+		if (Progress.value >= Progress.max)
 		{
 			Progress.value = 0;
 		}
 		else
 		{
-			Progress.value += 1;
-			if (Progress.value == Progress.max)
+			var NewTimestamp = new Date();
+			Progress.value += NewTimestamp - Timestamp;
+			Timestamp = NewTimestamp;
+			if (Progress.value >= Progress.max)
 			{
 				window.clearInterval(TimerId);
 				document.getElementById("ExamWorkHard").disabled = false;
