@@ -105,7 +105,7 @@ function Initialization()
 	// Generate some temporary levels
 	for (var i = 2; i < 50; i++)
 	{
-		GlobalLevels.push(new Level("Temporary Exam", i * 4, i, "Linear"));
+		GlobalLevels.push(new Level("Temporary Exam", i * 4, i * 2, "Linear"));
 	}
 	// Push upgrades
 	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", "Each click now gives you 2 points.", 3, null));
@@ -113,6 +113,11 @@ function Initialization()
 	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", "Each click now gives you 4 points.", 3, "click02"));
 	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", "Each click now gives you 5 points.", 3, "click03"));
 	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", "Each click now gives you 10 points.", 7, "click04"));
+	GlobalUpgrades.push(new Upgrade("speed01", "Time Management, Level 1", "Your clicks are now 50% faster.", 3, null));
+	GlobalUpgrades.push(new Upgrade("speed02", "Time Management, Level 2", "Your clicks are now 2 times faster.", 3, "speed01"));
+	GlobalUpgrades.push(new Upgrade("speed03", "Time Management, Level 3", "Your clicks are now 3 times faster.", 3, "speed02"));
+	GlobalUpgrades.push(new Upgrade("speed04", "Time Management, Level 4", "Your clicks are now 4 times faster.", 3, "speed03"));
+	GlobalUpgrades.push(new Upgrade("speed_jacobs", "Time Management, Level Jacobs", "You can click as fast as you can.", 7, "speed04"));
 	GlobalUpgrades.push(new Upgrade("crit", "Sudden Inspiration", "You have a 5% chance to get double points for a click.", 3, "click01"));
 	GlobalUpgrades.push(new Upgrade("crit_damage01", "Massive Inspiration, Level 1", "Inspiration now gives you 3x points.", 3, "crit"));
 	GlobalUpgrades.push(new Upgrade("crit_damage02", "Massive Inspiration, Level 2", "Inspiration now gives you 4x points.", 3, "crit_damage01"));
@@ -131,8 +136,8 @@ function Initialization()
 	GlobalUpgrades.push(new Upgrade("crit_chance07", "Reliable Inspiration, Level 7", "Inspiration now has 40% chance to occur.", 3, "crit_chance06"));
 	GlobalUpgrades.push(new Upgrade("crit_chance08", "Reliable Inspiration, Level 8", "Inspiration now has 45% chance to occur.", 3, "crit_chance07"));
 	GlobalUpgrades.push(new Upgrade("crit_chance09", "Reliable Inspiration, Level 9", "Inspiration now has 50% chance to occur.", 3, "crit_chance08"));
-	GlobalUpgrades.push(new Upgrade("crit_double01", "Inspiration Overflow", "Inspiration now can happen one extra time.", 5, "crit_damage08"));
-	GlobalUpgrades.push(new Upgrade("crit_double02", "Inspiration Overflow", "Inspiration now can happen one extra time.", 5, "crit_chance09"));
+	//GlobalUpgrades.push(new Upgrade("crit_double01", "Inspiration Overflow", "Inspiration now can happen one extra time.", 5, "crit_damage08"));
+	//GlobalUpgrades.push(new Upgrade("crit_double02", "Inspiration Overflow", "Inspiration now can happen one extra time.", 5, "crit_chance09"));
 	// Start exam timer
 	Exam_Timer();
 	// Show exam UI
@@ -146,9 +151,28 @@ function WorkHard_OnClick()
 {
 	if (ExamPoints < GlobalLevels[CurrentExamOrdinal].Points[4])
 	{
-		document.getElementById("ExamWorkHard").disabled = true;
-		WorkHard_Timer();
+		// Start timer
+		if (Upgrade.IsPurchased("speed_jacobs") == false)
+		{
+			WorkHard_Timer();
+			document.getElementById("ExamWorkHard").disabled = true;
+		}
+		// Insta-finish timer
+		else
+		{
+			WorkHard_TimerEnd();
+		}
 	}
+}
+
+function WorkHard_TimerEnd()
+{
+	// Add the points				
+	ExamPoints += GetExamPointsPerClick();
+	// Update points
+	var Goal = GetCurrentExamPointsGoal();
+	if (ExamPoints > Goal) { ExamPoints = Goal; }
+	UpdateExamPoints();
 }
 
 function EndExam_OnClick()
@@ -244,6 +268,16 @@ function GetExamPointsPerClick()
 	return PointsToAdd;
 }
 
+function GetWorkHardTimeModifier()
+{
+	var SpeedModifier = 1.0;
+	if (Upgrade.IsPurchased("speed01")) { SpeedModifier = 1.5; }
+	if (Upgrade.IsPurchased("speed02")) { SpeedModifier = 2.0; }
+	if (Upgrade.IsPurchased("speed03")) { SpeedModifier = 3.0; }
+	if (Upgrade.IsPurchased("speed04")) { SpeedModifier = 4.0; }
+	return SpeedModifier;
+}
+
 function GetCurrentExamGrade()
 {
 	var Grade = 5;
@@ -309,18 +343,13 @@ function WorkHard_Timer()
 		else
 		{
 			var NewTimestamp = new Date();
-			Progress.value += NewTimestamp - Timestamp;
+			Progress.value += (NewTimestamp - Timestamp) * GetWorkHardTimeModifier();
 			Timestamp = NewTimestamp;
 			if (Progress.value >= Progress.max)
 			{
 				window.clearInterval(TimerId);
 				document.getElementById("ExamWorkHard").disabled = false;
-				// Add the points				
-				ExamPoints += GetExamPointsPerClick();
-				// Update points
-				var Goal = GetCurrentExamPointsGoal();
-				if (ExamPoints > Goal) { ExamPoints = Goal; }
-				UpdateExamPoints();
+				WorkHard_TimerEnd();
 			}
 		}
 	}
