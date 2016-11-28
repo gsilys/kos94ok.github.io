@@ -108,11 +108,31 @@ function Initialization()
 		GlobalLevels.push(new Level("Temporary Exam", i * 4, i, "Linear"));
 	}
 	// Push upgrades
-	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", "Your work now gives you 1 extra point.", 1, null));
-	GlobalUpgrades.push(new Upgrade("click02", "Determination, Level 2", "Your work now gives you 1 extra point.", 2, "click01"));
-	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", "Your work now gives you 1 extra point.", 5, "click02"));
-	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", "Your work now gives you 1 extra point.", 8, "click03"));
-	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", "Your work now gives you double points.", 15, "click04"));
+	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", "Each click now gives you 2 points.", 3, null));
+	GlobalUpgrades.push(new Upgrade("click02", "Determination, Level 2", "Each click now gives you 3 points.", 3, "click01"));
+	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", "Each click now gives you 4 points.", 3, "click02"));
+	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", "Each click now gives you 5 points.", 3, "click03"));
+	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", "Each click now gives you 10 points.", 7, "click04"));
+	GlobalUpgrades.push(new Upgrade("crit", "Sudden Inspiration", "You have a 5% chance to get double points for a click.", 3, "click01"));
+	GlobalUpgrades.push(new Upgrade("crit_damage01", "Massive Inspiration, Level 1", "Inspiration now gives you 3x points.", 3, "crit"));
+	GlobalUpgrades.push(new Upgrade("crit_damage02", "Massive Inspiration, Level 2", "Inspiration now gives you 4x points.", 3, "crit_damage01"));
+	GlobalUpgrades.push(new Upgrade("crit_damage03", "Massive Inspiration, Level 3", "Inspiration now gives you 5x points.", 3, "crit_damage02"));
+	GlobalUpgrades.push(new Upgrade("crit_damage04", "Massive Inspiration, Level 4", "Inspiration now gives you 6x points.", 3, "crit_damage03"));
+	GlobalUpgrades.push(new Upgrade("crit_damage05", "Massive Inspiration, Level 5", "Inspiration now gives you 7x points.", 3, "crit_damage04"));
+	GlobalUpgrades.push(new Upgrade("crit_damage06", "Massive Inspiration, Level 6", "Inspiration now gives you 8x points.", 3, "crit_damage05"));
+	GlobalUpgrades.push(new Upgrade("crit_damage07", "Massive Inspiration, Level 7", "Inspiration now gives you 9x points.", 3, "crit_damage06"));
+	GlobalUpgrades.push(new Upgrade("crit_damage08", "Massive Inspiration, Level 8", "Inspiration now gives you 10x points.", 3, "crit_damage07"));
+	GlobalUpgrades.push(new Upgrade("crit_chance01", "Reliable Inspiration, Level 1", "Inspiration now has 10% chance to occur.", 3, "crit"));
+	GlobalUpgrades.push(new Upgrade("crit_chance02", "Reliable Inspiration, Level 2", "Inspiration now has 15% chance to occur.", 3, "crit_chance01"));
+	GlobalUpgrades.push(new Upgrade("crit_chance03", "Reliable Inspiration, Level 3", "Inspiration now has 20% chance to occur.", 3, "crit_chance02"));
+	GlobalUpgrades.push(new Upgrade("crit_chance04", "Reliable Inspiration, Level 4", "Inspiration now has 25% chance to occur.", 3, "crit_chance03"));
+	GlobalUpgrades.push(new Upgrade("crit_chance05", "Reliable Inspiration, Level 5", "Inspiration now has 30% chance to occur.", 3, "crit_chance04"));
+	GlobalUpgrades.push(new Upgrade("crit_chance06", "Reliable Inspiration, Level 6", "Inspiration now has 35% chance to occur.", 3, "crit_chance05"));
+	GlobalUpgrades.push(new Upgrade("crit_chance07", "Reliable Inspiration, Level 7", "Inspiration now has 40% chance to occur.", 3, "crit_chance06"));
+	GlobalUpgrades.push(new Upgrade("crit_chance08", "Reliable Inspiration, Level 8", "Inspiration now has 45% chance to occur.", 3, "crit_chance07"));
+	GlobalUpgrades.push(new Upgrade("crit_chance09", "Reliable Inspiration, Level 9", "Inspiration now has 50% chance to occur.", 3, "crit_chance08"));
+	GlobalUpgrades.push(new Upgrade("crit_double01", "Inspiration Overflow", "Inspiration now can happen one extra time.", 5, "crit_damage08"));
+	GlobalUpgrades.push(new Upgrade("crit_double02", "Inspiration Overflow", "Inspiration now can happen one extra time.", 5, "crit_chance09"));
 	// Start exam timer
 	Exam_Timer();
 	// Show exam UI
@@ -178,6 +198,52 @@ function BuyUpgrade_OnClick(ButtonId)
 //=====================================================================
 // Supplementary functions
 //=====================================================================
+function GetExamPointsPerClick()
+{
+	var PointsToAdd = 1;
+	// Vanilla points
+	if (Upgrade.IsPurchased("click01")) { PointsToAdd = 2; } 
+	if (Upgrade.IsPurchased("click02")) { PointsToAdd = 3; } 
+	if (Upgrade.IsPurchased("click03")) { PointsToAdd = 4; } 
+	if (Upgrade.IsPurchased("click04")) { PointsToAdd = 5; } 
+	if (Upgrade.IsPurchased("click05")) { PointsToAdd = 10; } 
+	// Inspiration
+	if (Upgrade.IsPurchased("crit"))
+	{
+		// Calculate the chance
+		var CritChance = 0.05;
+		if (Upgrade.IsPurchased("crit_chance01")) { CritChance = 0.10; }
+		if (Upgrade.IsPurchased("crit_chance02")) { CritChance = 0.15; }
+		if (Upgrade.IsPurchased("crit_chance03")) { CritChance = 0.20; }
+		if (Upgrade.IsPurchased("crit_chance04")) { CritChance = 0.25; }
+		if (Upgrade.IsPurchased("crit_chance05")) { CritChance = 0.30; }
+		if (Upgrade.IsPurchased("crit_chance06")) { CritChance = 0.35; }
+		if (Upgrade.IsPurchased("crit_chance07")) { CritChance = 0.40; }
+		if (Upgrade.IsPurchased("crit_chance08")) { CritChance = 0.45; }
+		if (Upgrade.IsPurchased("crit_chance09")) { CritChance = 0.50; }
+		var CritFactor = 2;
+		if (Upgrade.IsPurchased("crit_damage01")) { CritFactor = 3; }
+		if (Upgrade.IsPurchased("crit_damage02")) { CritFactor = 4; }
+		if (Upgrade.IsPurchased("crit_damage03")) { CritFactor = 5; }
+		if (Upgrade.IsPurchased("crit_damage04")) { CritFactor = 6; }
+		if (Upgrade.IsPurchased("crit_damage05")) { CritFactor = 7; }
+		if (Upgrade.IsPurchased("crit_damage06")) { CritFactor = 8; }
+		if (Upgrade.IsPurchased("crit_damage07")) { CritFactor = 9; }
+		if (Upgrade.IsPurchased("crit_damage08")) { CritFactor = 10; }
+		// Apply critical(s)
+		var CritRolls = 1;
+		if (Upgrade.IsPurchased("crit_double01")) { CritRolls += 1; }
+		if (Upgrade.IsPurchased("crit_double02")) { CritRolls += 1; }
+		for (var i = 0; i < CritRolls; i++)
+		{
+			var Roll = Math.random();
+			if (Roll < CritChance) { PointsToAdd *= CritFactor; }
+			else { break; }
+		}
+	}
+	return PointsToAdd;
+}
+
 function GetCurrentExamGrade()
 {
 	var Grade = 5;
@@ -249,15 +315,8 @@ function WorkHard_Timer()
 			{
 				window.clearInterval(TimerId);
 				document.getElementById("ExamWorkHard").disabled = false;
-				// Add the points
-				var PointsToAdd = 1;
-				if (Upgrade.IsPurchased("click01")) { PointsToAdd = 2; } 
-				if (Upgrade.IsPurchased("click02")) { PointsToAdd = 3; } 
-				if (Upgrade.IsPurchased("click03")) { PointsToAdd = 4; } 
-				if (Upgrade.IsPurchased("click04")) { PointsToAdd = 5; } 
-				if (Upgrade.IsPurchased("click05")) { PointsToAdd = 10; } 
-
-				ExamPoints += PointsToAdd;
+				// Add the points				
+				ExamPoints += GetExamPointsPerClick();
 				// Update points
 				var Goal = GetCurrentExamPointsGoal();
 				if (ExamPoints > Goal) { ExamPoints = Goal; }
