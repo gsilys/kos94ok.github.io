@@ -120,14 +120,14 @@ function Initialization()
 	GlobalUpgrades.push(new Upgrade("speed04", "Time Management, Scientific course", "Your clicks are now 4 times faster.", 3, "speed03"));
 	GlobalUpgrades.push(new Upgrade("speed_jacobs", "Time Management, Jacobs course", "Fires as fast as you can pull down the trigger.", 7, "speed04"));
 	GlobalUpgrades.push(new Upgrade("crit", "Sudden Inspiration", "You have a 5% chance to get inspired and double your points for a click.", 3, "click01"));
-	GlobalUpgrades.push(new Upgrade("crit_damage01", "Massive Inspiration, Level 1", "Inspiration now gives you 3x points.", 3, "crit"));
-	GlobalUpgrades.push(new Upgrade("crit_damage02", "Massive Inspiration, Level 2", "Inspiration now gives you 4x points.", 3, "crit_damage01"));
-	GlobalUpgrades.push(new Upgrade("crit_damage03", "Massive Inspiration, Level 3", "Inspiration now gives you 5x points.", 3, "crit_damage02"));
-	GlobalUpgrades.push(new Upgrade("crit_damage04", "Massive Inspiration, Level 4", "Inspiration now gives you 6x points.", 3, "crit_damage03"));
-	GlobalUpgrades.push(new Upgrade("crit_damage05", "Massive Inspiration, Level 5", "Inspiration now gives you 7x points.", 3, "crit_damage04"));
-	GlobalUpgrades.push(new Upgrade("crit_damage06", "Massive Inspiration, Level 6", "Inspiration now gives you 8x points.", 3, "crit_damage05"));
-	GlobalUpgrades.push(new Upgrade("crit_damage07", "Massive Inspiration, Level 7", "Inspiration now gives you 9x points.", 3, "crit_damage06"));
-	GlobalUpgrades.push(new Upgrade("crit_damage08", "Massive Inspiration, Level 8", "Inspiration now gives you 10x points.", 3, "crit_damage07"));
+	GlobalUpgrades.push(new Upgrade("crit_damage01", "Massive Inspiration, Level 1", "Inspiration now gives you 2.5x points.", 3, "crit"));
+	GlobalUpgrades.push(new Upgrade("crit_damage02", "Massive Inspiration, Level 2", "Inspiration now gives you 3.0x points.", 3, "crit_damage01"));
+	GlobalUpgrades.push(new Upgrade("crit_damage03", "Massive Inspiration, Level 3", "Inspiration now gives you 3.5x points.", 3, "crit_damage02"));
+	GlobalUpgrades.push(new Upgrade("crit_damage04", "Massive Inspiration, Level 4", "Inspiration now gives you 4.0x points.", 3, "crit_damage03"));
+	GlobalUpgrades.push(new Upgrade("crit_damage05", "Massive Inspiration, Level 5", "Inspiration now gives you 4.5x points.", 3, "crit_damage04"));
+	GlobalUpgrades.push(new Upgrade("crit_damage06", "Massive Inspiration, Level 6", "Inspiration now gives you 5.0x points.", 3, "crit_damage05"));
+	GlobalUpgrades.push(new Upgrade("crit_damage07", "Massive Inspiration, Level 7", "Inspiration now gives you 5.5x points.", 3, "crit_damage06"));
+	GlobalUpgrades.push(new Upgrade("crit_damage08", "Massive Inspiration, Level 8", "Inspiration now gives you 6.0x points.", 3, "crit_damage07"));
 	GlobalUpgrades.push(new Upgrade("crit_chance01", "Reliable Inspiration, Level 1", "Inspiration now has 10% chance to occur.", 3, "crit"));
 	GlobalUpgrades.push(new Upgrade("crit_chance02", "Reliable Inspiration, Level 2", "Inspiration now has 15% chance to occur.", 3, "crit_chance01"));
 	GlobalUpgrades.push(new Upgrade("crit_chance03", "Reliable Inspiration, Level 3", "Inspiration now has 20% chance to occur.", 3, "crit_chance02"));
@@ -247,14 +247,14 @@ function GetExamPointsPerClick()
 		if (Upgrade.IsPurchased("crit_chance08")) { CritChance = 0.45; }
 		if (Upgrade.IsPurchased("crit_chance09")) { CritChance = 0.50; }
 		var CritFactor = 2;
-		if (Upgrade.IsPurchased("crit_damage01")) { CritFactor = 3; }
-		if (Upgrade.IsPurchased("crit_damage02")) { CritFactor = 4; }
-		if (Upgrade.IsPurchased("crit_damage03")) { CritFactor = 5; }
-		if (Upgrade.IsPurchased("crit_damage04")) { CritFactor = 6; }
-		if (Upgrade.IsPurchased("crit_damage05")) { CritFactor = 7; }
-		if (Upgrade.IsPurchased("crit_damage06")) { CritFactor = 8; }
-		if (Upgrade.IsPurchased("crit_damage07")) { CritFactor = 9; }
-		if (Upgrade.IsPurchased("crit_damage08")) { CritFactor = 10; }
+		if (Upgrade.IsPurchased("crit_damage01")) { CritFactor = 2.5; }
+		if (Upgrade.IsPurchased("crit_damage02")) { CritFactor = 3.0; }
+		if (Upgrade.IsPurchased("crit_damage03")) { CritFactor = 3.5; }
+		if (Upgrade.IsPurchased("crit_damage04")) { CritFactor = 4.0; }
+		if (Upgrade.IsPurchased("crit_damage05")) { CritFactor = 4.5; }
+		if (Upgrade.IsPurchased("crit_damage06")) { CritFactor = 5.0; }
+		if (Upgrade.IsPurchased("crit_damage07")) { CritFactor = 5.5; }
+		if (Upgrade.IsPurchased("crit_damage08")) { CritFactor = 6.0; }
 		// Apply critical(s)
 		var CritRolls = 1;
 		if (Upgrade.IsPurchased("crit_double01")) { CritRolls += 1; }
@@ -266,7 +266,7 @@ function GetExamPointsPerClick()
 			else { break; }
 		}
 	}
-	return PointsToAdd;
+	return Math.floor(PointsToAdd);
 }
 
 function GetWorkHardTimeModifier()
