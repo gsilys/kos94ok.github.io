@@ -94,8 +94,9 @@ var TotalExamsFailed = 0;
 var GlobalLevels = [];
 var GlobalUpgrades = [];
 var ExamPoints = 0;
-var CurrencyUnits = 0;
+var CurrencyUnits = 100;
 var LastExamPassed = true;
+var DebugMode = true;
 
 //=====================================================================
 // Initialization
@@ -108,17 +109,17 @@ function Initialization()
 		GlobalLevels.push(new Level("Temporary Exam", i * 4, i * 2, "Linear"));
 	}
 	// Push upgrades
-	GlobalUpgrades.push(new Upgrade("click01", "Determination, Level 1", "Each click now gives you 2 points.", 3, null));
-	GlobalUpgrades.push(new Upgrade("click02", "Determination, Level 2", "Each click now gives you 3 points.", 3, "click01"));
-	GlobalUpgrades.push(new Upgrade("click03", "Determination, Level 3", "Each click now gives you 4 points.", 3, "click02"));
-	GlobalUpgrades.push(new Upgrade("click04", "Determination, Level 4", "Each click now gives you 5 points.", 3, "click03"));
-	GlobalUpgrades.push(new Upgrade("click05", "Determination, Level 5", "Each click now gives you 10 points.", 7, "click04"));
-	GlobalUpgrades.push(new Upgrade("speed01", "Time Management, Level 1", "Your clicks are now 50% faster.", 3, null));
-	GlobalUpgrades.push(new Upgrade("speed02", "Time Management, Level 2", "Your clicks are now 2 times faster.", 3, "speed01"));
-	GlobalUpgrades.push(new Upgrade("speed03", "Time Management, Level 3", "Your clicks are now 3 times faster.", 3, "speed02"));
-	GlobalUpgrades.push(new Upgrade("speed04", "Time Management, Level 4", "Your clicks are now 4 times faster.", 3, "speed03"));
-	GlobalUpgrades.push(new Upgrade("speed_jacobs", "Time Management, Level Jacobs", "You can click as fast as you can.", 7, "speed04"));
-	GlobalUpgrades.push(new Upgrade("crit", "Sudden Inspiration", "You have a 5% chance to get double points for a click.", 3, "click01"));
+	GlobalUpgrades.push(new Upgrade("click01", "Enthusiasm", "Each click now gives you 2 points.", 3, null));
+	GlobalUpgrades.push(new Upgrade("click02", "Courage", "Each click now gives you 3 points.", 3, "click01"));
+	GlobalUpgrades.push(new Upgrade("click03", "Persistence", "Each click now gives you 4 points.", 3, "click02"));
+	GlobalUpgrades.push(new Upgrade("click04", "Dedication", "Each click now gives you 5 points.", 3, "click03"));
+	GlobalUpgrades.push(new Upgrade("click05", "Determination", "Each click now gives you 10 points.", 7, "click04"));
+	GlobalUpgrades.push(new Upgrade("speed01", "Time Management, Introductory course", "Your clicks are now 50% faster.", 3, null));
+	GlobalUpgrades.push(new Upgrade("speed02", "Time Management, Advanced course", "Your clicks are now 2 times faster.", 3, "speed01"));
+	GlobalUpgrades.push(new Upgrade("speed03", "Time Management, Professional course", "Your clicks are now 3 times faster.", 3, "speed02"));
+	GlobalUpgrades.push(new Upgrade("speed04", "Time Management, Scientific course", "Your clicks are now 4 times faster.", 3, "speed03"));
+	GlobalUpgrades.push(new Upgrade("speed_jacobs", "Time Management, Jacobs course", "Fires as fast as you can pull down the trigger.", 7, "speed04"));
+	GlobalUpgrades.push(new Upgrade("crit", "Sudden Inspiration", "You have a 5% chance to get inspired and double your points for a click.", 3, "click01"));
 	GlobalUpgrades.push(new Upgrade("crit_damage01", "Massive Inspiration, Level 1", "Inspiration now gives you 3x points.", 3, "crit"));
 	GlobalUpgrades.push(new Upgrade("crit_damage02", "Massive Inspiration, Level 2", "Inspiration now gives you 4x points.", 3, "crit_damage01"));
 	GlobalUpgrades.push(new Upgrade("crit_damage03", "Massive Inspiration, Level 3", "Inspiration now gives you 5x points.", 3, "crit_damage02"));
@@ -179,7 +180,7 @@ function EndExam_OnClick()
 {
 	// Update the stats
 	var Grade = GetCurrentExamGrade();
-	if (Grade == 0) {
+	if (Grade == 0 && DebugMode == false) {
 		LastExamPassed = false;
 		TotalExamsFailed += 1;
 	}
@@ -426,7 +427,8 @@ function UpdateHome()
 	var Grade = GetCurrentExamGrade();
 	// Determine the outcome message
 	var ExamStatus;
-	if (Grade == 0) { ExamStatus = "You have failed the exam!"; }
+	if (Grade == 0 && DebugMode == false) { ExamStatus = "You have failed the exam!"; }
+	else if (Grade == 0 && DebugMode == true) { ExamStatus = "You have failed the exam! But it's debug mode so it's all k."; }
 	else { ExamStatus = "Congratulations! You have passed the exam with grade " + Grade; }
 	// Update elements
 	document.getElementById("HomeExamStatus").innerHTML = ExamStatus;
