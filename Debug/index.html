@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="core.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body onload="Initialization()">
+		<div id="Exam">
+			<span id="ExamName">Unnamed exam</span>
+			<span id="ExamNumber">???</span>
+			<div id="ExamPoints">
+				<span id="ExamPointsLabel">Points:</span>
+				<span id="ExamPointsCurrent">???</span>
+				<span id="ExamPointsSeparator">/</span>
+				<span id="ExamPointsMax">???</span>
+				<br/>
+			</div>
+			<div id="ExamGrade">
+				<span id="ExamGradeLabel">Grade:</span>
+				<span id="ExamGradeValue">?</span>
+			</div>
+			<table>
+				<tr><th><button id="ExamWorkHard" onclick="WorkHard_OnClick()">Work Hard<br><progress id="ExamWorkProgress" max="1000" value="1000"></progress></button></th></tr>
+				<tr><th><button id="ExamEndButton" onclick="EndExam_OnClick()">Finish Exam<hr><span id="ExamTimeProgress"></span></button></th></tr>
+			</table>
+		</div>
+		<div id="Home">
+			<div id="HomeExamStatus"></div>
+			<div id="HomeExamsPassed"></div>
+			<div id="HomeExamsFailed"></div>
+			<hr/>
+			<div id="HomeContinue">
+				<div id="HomeUpgradesLabel">Upgrades:</div>
+				<div id="HomeCurrencyUnits"></div>
+				<div id="HomeUpgrades"></div>
+				<hr/>
+				<button onclick="NextExam_OnClick()">Next Exam</button>
+			</div>
+			<div id="HomeGameOver">
+				<div id="HomeGameOverForReals">You have failed too many exams and have been expelled from the university! Refresh the page to re-enroll.</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -94,9 +94,9 @@ var TotalExamsFailed = 0;
 var GlobalLevels = [];
 var GlobalUpgrades = [];
 var ExamPoints = 0;
-var CurrencyUnits = 0;
+var CurrencyUnits = 100;
 var LastExamPassed = true;
-var DebugMode = false;
+var DebugMode = true;
 
 //=====================================================================
 // Initialization
